@@ -3,15 +3,21 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.math.FlxMath;
+import flixel.util.FlxColor;
 
 class Player extends FlxSprite
 {
 	var jumpForce = 500;
 	var moveSpeed = 300;
 
+	var star:FlxSprite;
+
 	public function new()
 	{
 		super();
+
+		star = new FlxSprite().loadGraphic("assets/images/star.png");
 
 		loadGraphic("assets/images/mike.png", true, 46, 45);
 		scale.set(1.3, 1.3);
@@ -42,6 +48,21 @@ class Player extends FlxSprite
 
 	var lastY:Float = -1;
 
+	override function drawComplex(cam)
+	{
+		if (star.alpha > 0)
+		{
+			var elp = FlxG.elapsed;
+			star.alpha -= elp;
+			star.angle += elp * 120;
+			star.scale.add(elp * 0.5, elp * 0.5);
+			star.color = FlxColor.interpolate(FlxColor.RED, FlxColor.WHITE, FlxMath.remapToRange(star.alpha, 0, 0.6, 0, 1));
+			star.drawComplex(cam);
+		}
+
+		super.drawComplex(cam);
+	}
+
 	override function update(elapsed:Float)
 	{
 		// Movement
@@ -63,7 +84,12 @@ class Player extends FlxSprite
 			moving = false;
 		}
 
-		inFloor = isTouching(FLOOR);
+		var floor = isTouching(FLOOR);
+		if (floor && !inFloor)
+		{
+			FlxG.sound.play("assets/sounds/hitfloor.mp3");
+		}
+		inFloor = floor;
 
 		// Jump
 		if (inFloor)
@@ -76,6 +102,7 @@ class Player extends FlxSprite
 				doubleJump = false;
 				inFloor = false;
 
+				FlxG.sound.play("assets/sounds/jump.mp3");
 				animation.play("jump");
 			}
 		}
@@ -83,11 +110,17 @@ class Player extends FlxSprite
 		{
 			if (!doubleJump)
 			{
+				// Double jump
 				if (FlxG.keys.justPressed.X)
 				{
 					velocity.y = -jumpForce * 0.75;
+					FlxG.sound.play("assets/sounds/doublejump.mp3");
 					animation.play("jump");
 					doubleJump = true;
+
+					star.setPosition(x - 20, y - 25);
+					star.scale.set(1, 1);
+					star.alpha = 0.6;
 				}
 			}
 		}

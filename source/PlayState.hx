@@ -3,21 +3,53 @@ package;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.util.FlxGradient;
 import flixel.util.FlxStringUtil;
+import openfl.Assets;
 
+// lime test html5
 class PlayState extends FlxState
 {
 	var player:Player;
 	var map:DemonMap;
 
-	var timer:FlxText;
-
 	override public function create()
 	{
 		super.create();
+
+		FlxG.stage.quality = LOW;
+
+		FlxG.sound.playMusic("assets/music/bg.mp3");
+
+		// Make background layers
+		for (i in 0...3)
+		{
+			var spr = new FlxSprite(0, 0, 'assets/images/bg/$i.png');
+			spr.screenCenter();
+			spr.scrollFactor.set(0.01 + (i * 0.03), 0.01 + (i * 0.03));
+
+			var arr = [
+				FlxColor.fromRGB(i * 50, i * 10, 0),
+				FlxColor.fromRGB(i * 50, i * 10, 0, 0),
+				FlxColor.fromRGB(i * 50, i * 10, 0)
+			];
+
+			var gradient = FlxGradient.createGradientFlxSprite(1, FlxG.height, arr, 7 + i);
+			gradient.scale.x = FlxG.width * 1.1;
+			gradient.screenCenter();
+			gradient.blend = ADD;
+			gradient.alpha = 0.3;
+
+			gradient.scrollFactor.copyFrom(spr.scrollFactor);
+			gradient.scrollFactor.subtract(0.015, 0.015);
+
+			add(spr);
+			add(gradient);
+		}
 
 		map = new DemonMap();
 		add(map);
@@ -26,7 +58,7 @@ class PlayState extends FlxState
 		add(player);
 
 		FlxG.camera.follow(player, PLATFORMER);
-		FlxG.camera.bgColor = FlxColor.fromRGB(100, 0, 0);
+		FlxG.camera.bgColor = FlxColor.fromRGB(25, 0, 0);
 		FlxG.camera.setScrollBoundsRect(0, 0, map.width, map.height);
 
 		player.x = map.width / 2;
@@ -41,11 +73,13 @@ class PlayState extends FlxState
 		FlxG.camera.pixelPerfectRender = true;
 		hudCam.pixelPerfectRender = true;
 
-		timer = new FlxText(0, 20, 0, "0:00", 16);
-		timer.screenCenter(X);
-		timer.scrollFactor.set();
+		var timer = new Timer();
 		timer.camera = hudCam;
 		add(timer);
+
+		var life = new Life();
+		life.camera = hudCam;
+		add(life);
 
 		var lastDemon:FlxObject = player;
 		for (i in 0...10)
@@ -56,15 +90,14 @@ class PlayState extends FlxState
 			lastDemon = demon;
 		}
 
-		// add(new Demon(player));
+		var angel = new Angel();
+		angel.screenCenter();
+		add(angel);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		map.overlapsWithCallback(player, FlxObject.separate);
-
-		timer.text = FlxStringUtil.formatTime(FlxG.game.ticks / 1000);
-		timer.screenCenter(X);
 
 		super.update(elapsed);
 	}

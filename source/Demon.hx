@@ -23,7 +23,7 @@ class Demon extends FlxSprite
 		this.player = player;
 
 		diff = FlxG.random.float(0, 6.28);
-		speed = FlxG.random.int(250, 300);
+		speed = FlxG.random.int(275, 325);
 		bound = FlxG.random.int(30, 50);
 
 		animation.curAnim.curFrame += Std.int(diff / 2);
