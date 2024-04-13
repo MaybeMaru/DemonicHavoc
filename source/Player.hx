@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import flixel.util.FlxColor;
 
 class Player extends FlxSprite
@@ -35,8 +36,6 @@ class Player extends FlxSprite
 		maxVelocity.y = 500;
 		maxVelocity.x = moveSpeed;
 
-		// FlxG.debugger.drawDebug = true;
-
 		setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
 		facing = RIGHT;
@@ -63,8 +62,33 @@ class Player extends FlxSprite
 		super.drawComplex(cam);
 	}
 
+	var ritualTable:SummonTable = null;
+
+	function stopMovement()
+	{
+		velocity.x = 0;
+		moving = false;
+	}
+
 	override function update(elapsed:Float)
 	{
+		// Ritual table
+		if (ritualTable != null)
+		{
+			if (FlxG.keys.pressed.Z)
+			{
+				animation.play("summon");
+				x = FlxMath.lerp(x, ritualTable.table.x + 25, elapsed * 4);
+				stopMovement();
+
+				super.update(elapsed);
+				return;
+			}
+
+			ritualTable.cancelRitual();
+			ritualTable = null;
+		}
+
 		// Movement
 		if (FlxG.keys.pressed.LEFT)
 		{
@@ -80,10 +104,10 @@ class Player extends FlxSprite
 		}
 		else
 		{
-			velocity.x = 0;
-			moving = false;
+			stopMovement();
 		}
 
+		// Just hit floor crap
 		var floor = isTouching(FLOOR);
 		if (floor && !inFloor)
 		{
@@ -123,6 +147,25 @@ class Player extends FlxSprite
 					star.alpha = 0.6;
 				}
 			}
+		}
+
+		if (FlxG.keys.justPressed.Z)
+		{
+			var gay = getScreenPosition(null, camera);
+			gay.add(12, 12);
+
+			for (table in PlayState.instance.map.tables)
+			{
+				// Nasty ass code but im tired
+				if (table.table.getBoundingBox(camera).containsPoint(gay))
+				{
+					ritualTable = table;
+					table.startRitual();
+					break;
+				}
+			}
+
+			gay.put();
 		}
 
 		super.update(elapsed);

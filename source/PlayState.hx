@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
@@ -14,12 +15,15 @@ import openfl.Assets;
 // lime test html5
 class PlayState extends FlxState
 {
-	var player:Player;
-	var map:DemonMap;
+	public static var instance:PlayState;
+
+	public var player:Player;
+	public var map:DemonMap;
 
 	override public function create()
 	{
 		super.create();
+		PlayState.instance = this;
 
 		FlxG.stage.quality = LOW;
 
@@ -51,19 +55,21 @@ class PlayState extends FlxState
 			add(gradient);
 		}
 
-		map = new DemonMap();
-		add(map);
+		FlxG.debugger.drawDebug = true;
 
 		player = new Player();
+		map = new DemonMap(player);
+
+		add(map);
 		add(player);
 
 		FlxG.camera.follow(player, PLATFORMER);
 		FlxG.camera.bgColor = FlxColor.fromRGB(25, 0, 0);
-		FlxG.camera.setScrollBoundsRect(0, 0, map.width, map.height);
+		FlxG.camera.setScrollBoundsRect(0, 0, map.tilemap.width, map.tilemap.height);
 
-		player.x = map.width / 2;
-		player.y = map.height / 2;
-		FlxG.camera.focusOn(player.getPosition());
+		player.x = map.tilemap.width / 2;
+		player.y = map.tilemap.height / 2;
+		FlxG.camera.snapToTarget();
 		FlxG.camera.zoom = 1.15;
 
 		var hudCam = new FlxCamera();
@@ -97,7 +103,7 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		map.overlapsWithCallback(player, FlxObject.separate);
+		map.tilemap.overlapsWithCallback(player, FlxObject.separate);
 
 		super.update(elapsed);
 	}

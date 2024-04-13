@@ -23,8 +23,12 @@ class Angel extends FlxSprite
 		{
 			case ANGEL:
 				loadGraphic("assets/images/angel.png", true, 64, 37);
+				setFacingFlip(RIGHT, false, false);
+				setFacingFlip(LEFT, true, false);
 			case CHERUB:
 				loadGraphic("assets/images/cherub.png", true, 48, 36);
+				setFacingFlip(RIGHT, true, false);
+				setFacingFlip(LEFT, false, false);
 		}
 
 		scale.set(1.2, 1.2);
@@ -32,5 +36,7 @@ class Angel extends FlxSprite
 
 		animation.add("idle", [0, 1, 2], 12);
 		animation.play("idle");
+
+		facing = RIGHT;
 	}
 }
