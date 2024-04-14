@@ -107,6 +107,7 @@ class Angel extends FlxSprite
 		{
 			destroy();
 			PlayState.instance.angelsGroup.remove(this, true);
+			FlxG.sound.play("assets/sounds/angeldie.mp3");
 
 			for (demon in demons)
 			{
