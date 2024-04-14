@@ -47,6 +47,16 @@ class Angel extends FlxSprite
 
 		diff = FlxG.random.float(0, 6.28);
 		speed = FlxG.random.float(100, 120);
+
+		if (PlayState.instance.timeElapsed > 50)
+		{
+			speed += FlxG.random.float(5, 15);
+		}
+
+		if (PlayState.instance.timeElapsed > 90)
+		{
+			speed += FlxG.random.float(5, 15);
+		}
 	}
 
 	var diff:Float;

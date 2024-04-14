@@ -191,12 +191,14 @@ class Player extends FlxSprite
 
 		if (mikeHealth <= 0)
 		{
+			FlxG.sound.music.stop();
 			FlxG.switchState(new GameOverState());
 			return;
 		}
 
 		canGetHit = false;
 		FlxG.camera.shake(0.025, 0.1);
+		FlxG.sound.play("assets/sounds/hurt.mp3");
 		FlxFlicker.flicker(this, 1.5, 0.1, true, true, (flk) -> canGetHit = true);
 	}
 }

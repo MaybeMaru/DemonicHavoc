@@ -23,11 +23,17 @@ class GameOverState extends FlxState
 		var homo = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(homo);
 
+		FlxG.sound.play("assets/sounds/gameover.mp3");
 		FlxG.camera.flash(FlxColor.WHITE, 1, () ->
 		{
 			new FlxTimer().start(1, (tmr) ->
 			{
 				FlxTween.tween(homo, {alpha: 0});
+
+				new FlxTimer().start(0.3, (tmr) ->
+				{
+					FlxG.sound.play("assets/sounds/hallelujah.mp3");
+				});
 			});
 		});
 

@@ -48,6 +48,12 @@ class DemonMap extends FlxGroup
 		tilemap.visible = false;
 		add(tilemap);
 
+		add(new FlxSprite().loadGraphic("assets/images/tiles/map.png"));
+
+		var a = new FlxSprite(tilemap.width / 2).loadGraphic("assets/images/tiles/map.png");
+		a.flipX = true;
+		add(a);
+
 		// Three
 		for (i in [[3, 11], [23, 11]])
 			add(new FlxSprite(i[0] * 50, i[1] * 50).loadGraphic("assets/images/tiles/threePlatform.png"));
