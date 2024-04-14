@@ -29,10 +29,12 @@ class SummonTable extends FlxSpriteGroup
 	public function startRitual()
 	{
 		table.animation.play("on");
+		PlayState.instance.inRitual = true;
 	}
 
 	public function cancelRitual()
 	{
 		table.animation.play("off");
+		PlayState.instance.inRitual = false;
 	}
 }

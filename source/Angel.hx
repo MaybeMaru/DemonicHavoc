@@ -1,7 +1,9 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.math.FlxMath;
 
 enum abstract AngelType(Int) from Int
 {
@@ -12,12 +14,16 @@ enum abstract AngelType(Int) from Int
 class Angel extends FlxSprite
 {
 	var type:AngelType;
+	var player:Player;
 
-	public function new(?type:Null<AngelType>)
+	public var target:FlxObject;
+
+	public function new(?type:Null<AngelType>, player:Player)
 	{
 		super();
 
 		type ??= cast FlxG.random.int(0, 1);
+		this.player = player;
 
 		switch (type)
 		{
@@ -38,5 +44,31 @@ class Angel extends FlxSprite
 		animation.play("idle");
 
 		facing = RIGHT;
+
+		diff = FlxG.random.float(0, 6.28);
+		speed = FlxG.random.float(100, 120);
+	}
+
+	var diff:Float;
+	var speed:Float;
+
+	override public function update(elapsed:Float):Void
+	{
+		velocity.set(0, 0);
+		offset.y = FlxMath.fastSin((FlxG.game.ticks / 1000) + diff) * 10;
+
+		var dx:Float = target.x - x;
+		var dy:Float = target.y - y;
+		var distance:Float = Math.sqrt(dx * dx + dy * dy);
+
+		facing = dx < 0 ? LEFT : RIGHT;
+
+		dx /= distance;
+		dy /= distance;
+
+		velocity.set(dx * speed, dy * speed);
+		acceleration.set(dx * speed, dy * speed);
+
+		super.update(elapsed);
 	}
 }

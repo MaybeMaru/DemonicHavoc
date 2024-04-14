@@ -31,7 +31,7 @@ class Timer extends FlxGroup
 	{
 		super.update(elapsed);
 
-		timer.text = FlxStringUtil.formatTime(FlxG.game.ticks / 1000);
+		timer.text = FlxStringUtil.formatTime(PlayState.instance.timeElapsed);
 		timer.screenCenter(X);
 	}
 }

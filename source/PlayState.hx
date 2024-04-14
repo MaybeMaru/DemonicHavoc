@@ -95,16 +95,64 @@ class PlayState extends FlxState
 			add(demon);
 			lastDemon = demon;
 		}
-
-		var angel = new Angel();
-		angel.screenCenter();
-		add(angel);
 	}
+
+	public var inRitual:Bool = false;
+
+	var bleh:Float = 0;
+
+	public var timeElapsed:Float = 0;
+
+	var spawnInterval:Float = 10.0; // Initial spawn interval in seconds
+	var lastSpawnTime:Float = 0.0;
 
 	override public function update(elapsed:Float)
 	{
 		map.tilemap.overlapsWithCallback(player, FlxObject.separate);
 
+		bleh = FlxMath.lerp(bleh, (inRitual ? -100 : 0), elapsed * (inRitual ? 1.5 : 5));
+		FlxG.camera.targetOffset.y = bleh;
+
 		super.update(elapsed);
+
+		// Get difficulty higher
+		timeElapsed += elapsed;
+
+		// Check if its time to spawn angels
+		if (timeElapsed - lastSpawnTime >= spawnInterval)
+		{
+			var twoPackChance = (timeElapsed > 30 ? (timeElapsed > 50 ? 25 : 15) : 0);
+			var threePackChance = (timeElapsed > 50 ? (timeElapsed > 70 ? 20 : 10) : 0);
+
+			if (threePackChance > 0 && FlxG.random.bool(threePackChance))
+			{
+				for (i in 0...3)
+					spawnAngel();
+			}
+			else if (twoPackChance > 0 && FlxG.random.bool(twoPackChance))
+			{
+				for (i in 0...2)
+					spawnAngel();
+			}
+			else
+			{
+				spawnAngel();
+			}
+
+			lastSpawnTime = timeElapsed;
+
+			// Super bullshit hardcoded rising difficulty go!
+			spawnInterval -= timeElapsed > 30 ? (timeElapsed > 50 ? (timeElapsed > 70 ? 0.75 : 0.5) : 0.25) : 0.15;
+			spawnInterval = Math.max(spawnInterval, 2.0);
+		}
+	}
+
+	function spawnAngel()
+	{
+		var angel = new Angel(player);
+		angel.target = player;
+		angel.x = FlxG.random.bool() ? -200 : map.tilemap.width + 200;
+		angel.y = FlxG.random.float(-200, map.tilemap.height + 200);
+		add(angel);
 	}
 }
