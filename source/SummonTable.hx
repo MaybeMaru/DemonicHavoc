@@ -14,7 +14,8 @@ class SummonTable extends FlxSpriteGroup
 
 		table = new FlxSprite().loadGraphic("assets/images/table/table.png", true, 54, 39);
 		table.animation.add("off", [0], 12);
-		table.animation.add("on", [1, 2], 12);
+		table.animation.add("turn", [1, 2, 3], 12, false);
+		table.animation.add("on", [2, 3], 12);
 		add(table);
 
 		cancelRitual();
@@ -28,7 +29,12 @@ class SummonTable extends FlxSpriteGroup
 
 	public function startRitual()
 	{
-		table.animation.play("on");
+		table.animation.play("turn");
+		table.animation.finishCallback = (a) ->
+		{
+			table.animation.play("on");
+			table.animation.finishCallback = null;
+		}
 		PlayState.instance.inRitual = true;
 	}
 

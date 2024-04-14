@@ -1,13 +1,9 @@
 package;
 
-import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
-import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
-import flixel.util.FlxColor;
 import openfl.Assets;
-import openfl.display.BitmapData;
 
 using StringTools;
 
@@ -49,7 +45,23 @@ class DemonMap extends FlxGroup
 
 		tilemap = new FlxTilemap();
 		tilemap.loadMapFromCSV(csv, "assets/images/tile.png", 50, 50, OFF, 0, 1, 1);
+		tilemap.visible = false;
 		add(tilemap);
+
+		// Three
+		for (i in [[3, 11], [23, 11]])
+			add(new FlxSprite(i[0] * 50, i[1] * 50).loadGraphic("assets/images/tiles/threePlatform.png"));
+
+		// Four
+		for (i in [[9, 11], [16, 11], [6, 6], [19, 6]])
+			add(new FlxSprite(i[0] * 50, i[1] * 50).loadGraphic("assets/images/tiles/fourPlatform.png"));
+
+		// Five
+		add(new FlxSprite(12 * 50, 8 * 50).loadGraphic("assets/images/tiles/fivePlatform.png"));
+
+		// Six
+		for (i in [[4, 14], [19, 14]])
+			add(new FlxSprite(i[0] * 50, i[1] * 50).loadGraphic("assets/images/tiles/sixPlatform.png"));
 
 		for (i in tableIndex)
 		{

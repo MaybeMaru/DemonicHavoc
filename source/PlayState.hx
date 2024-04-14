@@ -115,10 +115,15 @@ class PlayState extends FlxState
 
 		super.update(elapsed);
 
-		// Get difficulty higher
+		// Higher difficulty over time
 		timeElapsed += elapsed;
 
 		// Check if its time to spawn angels
+		// updateSpawn();
+	}
+
+	function updateSpawn()
+	{
 		if (timeElapsed - lastSpawnTime >= spawnInterval)
 		{
 			var twoPackChance = (timeElapsed > 30 ? (timeElapsed > 50 ? 25 : 15) : 0);
