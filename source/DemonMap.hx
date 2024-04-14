@@ -147,9 +147,13 @@ class DemonMap extends FlxGroup
 			table.show();
 
 		var rando:Array<Float>;
-		if (PlayState.instance.timeElapsed > 90)
+		if (PlayState.instance.timeElapsed > 120)
 		{
 			rando = [7, 10];
+		}
+		else if (PlayState.instance.timeElapsed > 70)
+		{
+			rando = [8, 12];
 		}
 		else if (PlayState.instance.timeElapsed > 50)
 		{
@@ -157,7 +161,7 @@ class DemonMap extends FlxGroup
 		}
 		else
 		{
-			rando = [12, 17];
+			rando = [11, 16];
 		}
 
 		tmr.reset(FlxG.random.float(rando[0], rando[1]));

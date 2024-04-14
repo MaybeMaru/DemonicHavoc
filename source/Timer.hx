@@ -10,7 +10,7 @@ import openfl.Assets;
 
 class Timer extends FlxGroup
 {
-	var timer:FlxText;
+	public var timer:FlxText;
 
 	public function new()
 	{

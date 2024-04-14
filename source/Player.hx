@@ -200,6 +200,7 @@ class Player extends FlxSprite
 		if (mikeHealth <= 0)
 		{
 			FlxG.sound.music.stop();
+			GameOverState.lastTime = PlayState.instance.timeElapsed;
 			FlxG.switchState(new GameOverState());
 			return;
 		}

@@ -21,6 +21,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	public var map:DemonMap;
 	public var life:Life;
+	public var timer:Timer;
 
 	public var angelsGroup:FlxTypedGroup<Angel>;
 	public var demonsGroup:FlxTypedGroup<Demon>;
@@ -28,6 +29,7 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.mouse.visible = false;
 		PlayState.instance = this;
 
 		FlxG.stage.quality = LOW;
@@ -88,7 +90,7 @@ class PlayState extends FlxState
 		FlxG.camera.pixelPerfectRender = true;
 		hudCam.pixelPerfectRender = true;
 
-		var timer = new Timer();
+		timer = new Timer();
 		timer.camera = hudCam;
 		add(timer);
 
@@ -129,14 +131,47 @@ class PlayState extends FlxState
 
 		// Check if its time to spawn angels
 		updateSpawn();
+
+		// Made demons go to the closest angels
+		targetAngels();
+	}
+
+	function targetAngels()
+	{
+		var closestAngel:Angel = null;
+		var closestDistance:Float = 9999999;
+		for (angel in angelsGroup.members)
+		{
+			var dx:Float = angel.x - player.x;
+			var dy:Float = angel.y - player.y;
+			var distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+
+			if (distance <= 200 && distance < closestDistance)
+			{
+				closestDistance = distance;
+				closestAngel = angel;
+			}
+		}
+
+		if (closestAngel != null && closestAngel.demons.length < 3)
+		{
+			var firstDemon = getFirstDemonAvailable();
+			if (firstDemon != null)
+			{
+				firstDemon.targetAngel = true;
+				firstDemon.target = closestAngel;
+				closestAngel.demons.push(firstDemon);
+				resetDemonTargets();
+			}
+		}
 	}
 
 	function updateSpawn()
 	{
 		if (timeElapsed - lastSpawnTime >= spawnInterval)
 		{
-			var twoPackChance = (timeElapsed > 30 ? (timeElapsed > 50 ? 25 : 15) : 0);
-			var threePackChance = (timeElapsed > 50 ? (timeElapsed > 70 ? 20 : 10) : 0);
+			var twoPackChance = (timeElapsed > 70 ? (timeElapsed > 100 ? 25 : 15) : 0);
+			var threePackChance = (timeElapsed > 100 ? (timeElapsed > 130 ? 20 : 10) : 0);
 
 			if (threePackChance > 0 && FlxG.random.bool(threePackChance))
 			{
@@ -156,7 +191,29 @@ class PlayState extends FlxState
 			lastSpawnTime = timeElapsed;
 
 			// Super bullshit hardcoded rising difficulty go!
-			spawnInterval -= timeElapsed > 30 ? (timeElapsed > 50 ? (timeElapsed > 70 ? 0.75 : 0.5) : 0.25) : 0.15;
+			var resta:Float;
+			if (timeElapsed > 130)
+			{
+				resta = .75;
+			}
+			else if (timeElapsed > 80)
+			{
+				resta = .65;
+			}
+			else if (timeElapsed > 60)
+			{
+				resta = .5;
+			}
+			else if (timeElapsed > 40)
+			{
+				resta = .25;
+			}
+			else
+			{
+				resta = .15;
+			}
+
+			spawnInterval -= resta;
 			spawnInterval = Math.max(spawnInterval, 2.0);
 		}
 	}
@@ -198,11 +255,54 @@ class PlayState extends FlxState
 		demonsGroup.add(demon);
 	}
 
+	public function getFirstDemonAvailable():Demon
+	{
+		for (demon in demonsArray)
+		{
+			if (!demon.targetAngel)
+			{
+				return demon;
+			}
+		}
+		return null;
+	}
+
 	public function resetDemonTargets()
 	{
 		for (i in 0...demonsArray.length)
 		{
-			demonsArray[i].target = demonsArray[i - 1] ?? player;
+			var demon = demonsArray[i];
+
+			// skip demons targeting an angel
+			if (demon.targetAngel)
+			{
+				continue;
+			}
+
+			var targetIndex:Int = i - 1;
+			var target:Demon = null;
+
+			// find closest demon not targeting an angel
+			while (targetIndex >= 0)
+			{
+				var potentialTarget = demonsArray[targetIndex];
+				if (!potentialTarget.targetAngel)
+				{
+					target = potentialTarget;
+					break;
+				}
+				targetIndex--;
+			}
+
+			// default to following the player
+			if (target == null)
+			{
+				demon.target = player;
+			}
+			else
+			{
+				demon.target = target;
+			}
 		}
 	}
 }

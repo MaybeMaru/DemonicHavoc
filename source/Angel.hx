@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
 
 enum abstract AngelType(Int) from Int
 {
@@ -15,6 +16,9 @@ class Angel extends FlxSprite
 {
 	var type:AngelType;
 	var player:Player;
+
+	// All demons currently kicking ass
+	public var demons:Array<Demon> = [];
 
 	public var target:FlxObject;
 
@@ -62,6 +66,61 @@ class Angel extends FlxSprite
 	var diff:Float;
 	var speed:Float;
 
+	var healthPoints:Int = 7;
+
+	public function getBite(demon:Demon)
+	{
+		healthPoints--;
+		demon.bitesLeft--;
+
+		demon.animation.play("bite", true);
+		demon.animation.finishCallback = (n) ->
+		{
+			demon.animation.finishCallback = null;
+			if (demon.bitesLeft <= 0)
+			{
+				// demon.destroy();
+				demons.remove(demon);
+				PlayState.instance.demonsArray.remove(demon);
+				PlayState.instance.resetDemonTargets();
+
+				demon.x += FlxG.random.int(-5, 5);
+				demon.y += FlxG.random.int(-5, 5);
+				FlxG.sound.play("assets/sounds/demondie" + FlxG.random.int(1, 3) + ".mp3").pitch = FlxG.random.float(0.9, 1.1);
+
+				demon.target = null;
+				demon.animation.play("die");
+				demon.velocity.set(20 * (FlxG.random.bool() ? -1 : 1), -100);
+				demon.acceleration.y = 600;
+
+				new FlxTimer().start(5, (tmr) ->
+				{
+					PlayState.instance.demonsGroup.remove(demon);
+					demon.destroy();
+				});
+			}
+		}
+
+		FlxG.sound.play("assets/sounds/bite.mp3");
+
+		if (healthPoints <= 0)
+		{
+			destroy();
+			PlayState.instance.angelsGroup.remove(this, true);
+
+			for (demon in demons)
+			{
+				demon.targetAngel = false;
+				demon.animation.play("idle");
+			}
+
+			PlayState.instance.resetDemonTargets();
+		}
+	}
+
+	var blehTimer:Float = 0.5;
+	var nextBite:Float = 0.5;
+
 	override public function update(elapsed:Float):Void
 	{
 		velocity.set(0, 0);
@@ -87,5 +146,43 @@ class Angel extends FlxSprite
 		}
 
 		super.update(elapsed);
+
+		if (demons.length > 0)
+		{
+			var biteQueue:Array<Demon> = [];
+			var hasDemonClose:Bool = false;
+			for (demon in demons)
+			{
+				if (quickDist(demon) <= 25)
+				{
+					hasDemonClose = true;
+					biteQueue.push(demon);
+				}
+			}
+
+			if (hasDemonClose)
+			{
+				blehTimer += elapsed;
+				if (blehTimer >= nextBite)
+				{
+					blehTimer = 0;
+					nextBite = FlxG.random.float(0.4, 0.6);
+					for (demon in biteQueue)
+					{
+						if (healthPoints <= 0)
+							break;
+
+						getBite(demon);
+					}
+				}
+			}
+		}
+	}
+
+	function quickDist(demon:Demon)
+	{
+		var dx:Float = demon.x - x;
+		var dy:Float = demon.y - y;
+		return Math.abs(Math.sqrt(dx * dx + dy * dy));
 	}
 }
