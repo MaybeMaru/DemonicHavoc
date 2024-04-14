@@ -71,6 +71,15 @@ class Player extends FlxSprite
 		moving = false;
 	}
 
+	public function cancelRitual()
+	{
+		if (ritualTable != null)
+		{
+			ritualTable.cancelRitual();
+			ritualTable = null;
+		}
+	}
+
 	override function update(elapsed:Float)
 	{
 		// Ritual table
@@ -86,8 +95,7 @@ class Player extends FlxSprite
 				return;
 			}
 
-			ritualTable.cancelRitual();
-			ritualTable = null;
+			cancelRitual();
 		}
 
 		// Movement
@@ -158,7 +166,7 @@ class Player extends FlxSprite
 			for (table in PlayState.instance.map.tables)
 			{
 				// Nasty ass code but im tired
-				if (table.table.getBoundingBox(camera).containsPoint(gay))
+				if (!table.finished && table.table.getBoundingBox(camera).containsPoint(gay))
 				{
 					ritualTable = table;
 					table.startRitual();
@@ -195,6 +203,8 @@ class Player extends FlxSprite
 			FlxG.switchState(new GameOverState());
 			return;
 		}
+
+		cancelRitual();
 
 		canGetHit = false;
 		FlxG.camera.shake(0.025, 0.1);

@@ -4,6 +4,7 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -30,28 +31,11 @@ class TitleState extends FlxState
 		FlxG.mouse.visible = false;
 		FlxG.camera.pixelPerfectRender = true;
 
-		var red = [FlxColor.fromRGB(255, 0, 0, 0), FlxColor.RED];
-		var orange = [FlxColor.fromRGB(255, 165, 0, 0), FlxColor.fromRGB(255, 165, 0)];
-
-		var gradientOne = FlxGradient.createGradientFlxSprite(1, FlxG.height, red, 10);
-		gradientOne.scale.x = FlxG.width;
-		gradientOne.updateHitbox();
-		add(gradientOne);
-
-		var gradientTwo = FlxGradient.createGradientFlxSprite(1, FlxG.height, orange, 10);
-		gradientTwo.scale.x = FlxG.width;
-		gradientTwo.updateHitbox();
-		gradientTwo.blend = ADD;
-		add(gradientTwo);
-
-		gradientOne.y = 50;
-		gradientTwo.y = 150;
-
-		gradientOne.alpha = 0.6;
-		gradientTwo.alpha = 0.4;
-
-		gradientOne.scrollFactor.set(0, 0.075);
-		gradientTwo.scrollFactor.set(0, 0.1);
+		var bg = new FlxSprite().loadGraphic("assets/images/titlebg.png");
+		bg.scrollFactor.set();
+		bg.setGraphicSize(FlxG.width, FlxG.height);
+		bg.updateHitbox();
+		add(bg);
 
 		logo = new FlxSprite(0, 0, "assets/images/logo.png");
 		logo.scale.set(1.5, 1.5);
@@ -115,6 +99,7 @@ class TitleState extends FlxState
 		if (FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER)
 		{
 			stop = true;
+			FlxG.sound.play("assets/sounds/select.mp3");
 			FlxTween.tween(FlxG.camera.scroll, {y: FlxG.height * 2}, 1, {
 				onComplete: (twn) ->
 				{
@@ -126,7 +111,24 @@ class TitleState extends FlxState
 							case 0:
 								FlxG.switchState(new PlayState());
 							case 1:
+								FlxG.switchState(new TextState('
+								CONTROLS
+
+								Movement: Arrow keys
+								Jump / Double Jump: X
+								Summon: Z
+								'));
+
 							case 2:
+								FlxG.switchState(new TextState('
+								CREDITS
+
+								Creator: MaybeMaru
+								Engine: Haxeflixel
+								Sounds: jsfxr
+								Music: TOTTFIY (Brutal 8-bit Remix) 
+								'));
+
 						}
 					});
 				},
@@ -139,6 +141,9 @@ class TitleState extends FlxState
 
 	function changeItem(change:Int)
 	{
+		if (change != 0)
+			FlxG.sound.play("assets/sounds/menuclick.mp3");
+
 		homo = FlxMath.wrap(homo + change, 0, esComoFuck.length - 1);
 		for (i in esComoFuck)
 		{

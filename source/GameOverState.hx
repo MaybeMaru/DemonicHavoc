@@ -32,12 +32,12 @@ class GameOverState extends FlxState
 
 				new FlxTimer().start(0.3, (tmr) ->
 				{
-					FlxG.sound.play("assets/sounds/hallelujah.mp3");
+					FlxG.sound.play("assets/sounds/hallelujah.mp3", 1.5);
 				});
 			});
 		});
 
-		new FlxTimer().start(7, (tmr) ->
+		new FlxTimer().start(8, (tmr) ->
 		{
 			FlxG.camera.fade(FlxColor.BLACK, 1, false, () ->
 			{

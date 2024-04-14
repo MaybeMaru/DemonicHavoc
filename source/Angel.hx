@@ -46,7 +46,7 @@ class Angel extends FlxSprite
 		facing = RIGHT;
 
 		diff = FlxG.random.float(0, 6.28);
-		speed = FlxG.random.float(100, 120);
+		speed = FlxG.random.float(80, 100);
 
 		if (PlayState.instance.timeElapsed > 50)
 		{

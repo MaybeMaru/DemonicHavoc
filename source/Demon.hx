@@ -16,21 +16,27 @@ class Demon extends FlxSprite
 	{
 		super();
 
+		//		loadGraphic("assets/images/demon.png");
+
 		loadGraphic("assets/images/demon.png", true, 20, 25);
-		animation.add("idle", [0, 1, 2], 12);
-		animation.play("idle", true);
+		/*animation.add("idle", [0, 1, 2], 12);
+			animation.play("idle");
+
+			for (frame in frames.frames)
+			{
+				if (frame == null)
+				{
+					frames.frames.remove(frame);
+				}
+				// frame.duration = (1 / 12);
+		}*/
 
 		this.player = player;
 
 		diff = FlxG.random.float(0, 6.28);
 		speed = FlxG.random.int(275, 325);
 		bound = FlxG.random.int(30, 50);
-
-		FlxG.signals.postUpdate.addOnce(() ->
-		{
-			if (animation.curAnim != null)
-				animation.curAnim.curFrame += Std.int(diff / 2);
-		});
+		// animation.curAnim.curFrame += Std.int(diff / 2);
 
 		setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
@@ -59,6 +65,7 @@ class Demon extends FlxSprite
 		if (Math.abs(distance) <= bound)
 		{
 			super.update(elapsed);
+
 			return;
 		}
 

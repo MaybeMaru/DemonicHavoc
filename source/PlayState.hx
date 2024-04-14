@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -21,6 +22,9 @@ class PlayState extends FlxState
 	public var map:DemonMap;
 	public var life:Life;
 
+	public var angelsGroup:FlxTypedGroup<Angel>;
+	public var demonsGroup:FlxTypedGroup<Demon>;
+
 	override public function create()
 	{
 		super.create();
@@ -28,7 +32,7 @@ class PlayState extends FlxState
 
 		FlxG.stage.quality = LOW;
 
-		FlxG.sound.playMusic("assets/music/bg.mp3");
+		FlxG.sound.playMusic("assets/music/bg.mp3", 0.8);
 
 		// Make background layers
 		for (i in 0...3)
@@ -60,8 +64,12 @@ class PlayState extends FlxState
 
 		player = new Player();
 		map = new DemonMap(player);
+		angelsGroup = new FlxTypedGroup<Angel>();
+		demonsGroup = new FlxTypedGroup<Demon>();
 
 		add(map);
+		add(angelsGroup);
+		add(demonsGroup);
 		add(player);
 
 		FlxG.camera.follow(player, PLATFORMER);
@@ -159,6 +167,42 @@ class PlayState extends FlxState
 		angel.target = player;
 		angel.x = FlxG.random.bool() ? -200 : map.tilemap.width + 200;
 		angel.y = FlxG.random.float(-200, map.tilemap.height + 200);
-		add(angel);
+		angelsGroup.add(angel);
+	}
+
+	public var demonsArray:Array<Demon> = [];
+
+	public function spawnDemon(x:Float, y:Float)
+	{
+		var demon = new Demon(player);
+		demon.setPosition(x, y);
+
+		var i:Int = demonsArray.length - 1;
+		while (i > -1)
+		{
+			if (demonsArray[i] != null)
+			{
+				demon.target = demonsArray[i];
+				break;
+			}
+
+			i--;
+		}
+
+		if (demon.target == null)
+			demon.target = player;
+
+		demonsArray.push(demon);
+		demon.ID = demonsArray.length - 1;
+
+		demonsGroup.add(demon);
+	}
+
+	public function resetDemonTargets()
+	{
+		for (i in 0...demonsArray.length)
+		{
+			demonsArray[i].target = demonsArray[i - 1] ?? player;
+		}
 	}
 }

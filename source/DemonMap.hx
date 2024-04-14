@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
@@ -77,5 +78,19 @@ class DemonMap extends FlxGroup
 			tables.push(table);
 			add(table);
 		}
+	}
+
+	public function getRandomOffTable():SummonTable
+	{
+		var posibleTables:Array<SummonTable> = [];
+		for (i in tables)
+		{
+			if (i.finished)
+			{
+				posibleTables.push(i);
+			}
+		}
+
+		return posibleTables[FlxG.random.int(0, posibleTables.length - 1)];
 	}
 }
