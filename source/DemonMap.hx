@@ -3,7 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
+import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import openfl.Assets;
 
 using StringTools;
@@ -77,8 +81,89 @@ class DemonMap extends FlxGroup
 			table.setPosition(point.x - table.width / 2, point.y - table.height / 2);
 			tables.push(table);
 			add(table);
+
+			table.visible = false;
+			table.finished = true;
 		}
+
+		var lowerTable = tables[tables.length - 1];
+		lowerTable.show();
+
+		FlxG.signals.preUpdate.addOnce(() ->
+		{
+			var fuck = new FlxText(0, lowerTable.y - 25);
+			fuck.setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
+			fuck.text = "Press Z To Summon Some Buddies";
+			// fuck.color = 0xffff0000;
+			fuck.scale.set(0.8, 0.8);
+			fuck.updateHitbox();
+			fuck.x = (tilemap.width - fuck.width) / 2;
+			PlayState.instance.add(fuck);
+
+			// the rushing is unreal rn
+			var twn = FlxTween.tween(fuck.offset, {y: 5}, 0.75, {
+				type: PINGPONG,
+				ease: FlxEase.backIn,
+				onUpdate: (e) ->
+				{
+					if (FlxG.keys.justPressed.Z)
+					{
+						FlxTween.tween(fuck, {alpha: 0}, 0.5, {
+							onComplete: (a) ->
+							{
+								e.cancel();
+								a.cancel();
+								fuck.destroy();
+							}
+						});
+					}
+				}
+			});
+
+			new FlxTimer().start(5, (tmr) ->
+			{
+				if (fuck.exists)
+				{
+					twn.cancel();
+					FlxTween.tween(fuck, {alpha: 0}, 0.5, {
+						onComplete: (a) ->
+						{
+							a.cancel();
+							fuck.destroy();
+						}
+					});
+				}
+			});
+		});
+
+		tableTimer = new FlxTimer();
+		tableTimer.start(7, (tmr) -> resetTimer(tmr));
 	}
+
+	function resetTimer(tmr:FlxTimer)
+	{
+		var table = getRandomOffTable();
+		if (table != null)
+			table.show();
+
+		var rando:Array<Float>;
+		if (PlayState.instance.timeElapsed > 90)
+		{
+			rando = [7, 10];
+		}
+		else if (PlayState.instance.timeElapsed > 50)
+		{
+			rando = [9, 15];
+		}
+		else
+		{
+			rando = [12, 17];
+		}
+
+		tmr.reset(FlxG.random.float(rando[0], rando[1]));
+	}
+
+	var tableTimer:FlxTimer;
 
 	public function getRandomOffTable():SummonTable
 	{
@@ -91,6 +176,6 @@ class DemonMap extends FlxGroup
 			}
 		}
 
-		return posibleTables[FlxG.random.int(0, posibleTables.length - 1)];
+		return posibleTables.length > 0 ? posibleTables[FlxG.random.int(0, posibleTables.length - 1)] : null;
 	}
 }

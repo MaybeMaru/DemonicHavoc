@@ -65,12 +65,15 @@ class TitleState extends FlxState
 			gay.scrollFactor.set(0, 0.8);
 		}
 
-		if (fromGameOver)
-		{
-			stop = true;
-			fromGameOver = false;
-			FlxG.camera.flash(FlxColor.BLACK, 1, () -> stop = false);
-		}
+		FlxG.sound.playMusic("assets/music/title.mp3");
+
+		// if (fromGameOver)
+		// {
+		stop = true;
+		fromGameOver = false;
+		FlxG.camera.flash(FlxColor.BLACK, 1, () -> stop = false);
+		FlxG.sound.music.fadeIn();
+		// }
 
 		trans = FlxGradient.createGradientFlxSprite(1, FlxG.height * 2, [FlxColor.TRANSPARENT, FlxColor.BLACK, FlxColor.BLACK, FlxColor.BLACK], 10);
 		trans.scale.x = FlxG.width;
@@ -100,6 +103,7 @@ class TitleState extends FlxState
 		{
 			stop = true;
 			FlxG.sound.play("assets/sounds/select.mp3");
+			FlxG.sound.music.fadeOut();
 			FlxTween.tween(FlxG.camera.scroll, {y: FlxG.height * 2}, 1, {
 				onComplete: (twn) ->
 				{
@@ -126,7 +130,7 @@ class TitleState extends FlxState
 								Creator: MaybeMaru
 								Engine: Haxeflixel
 								Sounds: jsfxr
-								Music: TOTTFIY (Brutal 8-bit Remix) 
+								Music: White Bat Audio (Royalty Free)
 								'));
 
 						}

@@ -105,6 +105,26 @@ class SummonTable extends FlxSpriteGroup
 		}
 	}
 
+	public function show()
+	{
+		book.alpha = 0;
+		table.alpha = 0;
+		FlxTween.tween(book, {alpha: 1}, 0.3, {
+			onUpdate: (e) ->
+			{
+				table.colorTransform.redOffset = 255 - (book.alpha * 255);
+				table.scale.x = 1.5 * book.alpha;
+				table.alpha = book.alpha;
+			},
+			onComplete: (e) ->
+			{
+				finished = false;
+			}
+		});
+
+		visible = true;
+	}
+
 	public function hide()
 	{
 		FlxTween.tween(book, {alpha: 0}, 0.3, {
@@ -112,7 +132,6 @@ class SummonTable extends FlxSpriteGroup
 			{
 				table.colorTransform.redOffset = 255 - (book.alpha * 255);
 				table.scale.x = 1.5 * book.alpha;
-				// table.scale.y = 1.5 * FlxMath.remapToRange(book.alpha, 0, 1, 1, 2);
 				table.alpha = book.alpha;
 			},
 			onComplete: (e) ->
