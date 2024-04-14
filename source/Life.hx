@@ -28,7 +28,7 @@ class Life extends FlxSpriteGroup
 		setPercent(1);
 	}
 
-	function setPercent(percent:Float)
+	public function setPercent(percent:Float)
 	{
 		var h = top.height * percent;
 		top.clipRect = FlxRect.weak(0, top.height - h, top.width, h);

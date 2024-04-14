@@ -69,6 +69,13 @@ class Angel extends FlxSprite
 		velocity.set(dx * speed, dy * speed);
 		acceleration.set(dx * speed, dy * speed);
 
+		var gay = player.getScreenPosition(null, FlxG.camera);
+		gay.add(12, 12);
+		if (this.getBoundingBox(FlxG.camera).containsPoint(gay))
+		{
+			player.getHit();
+		}
+
 		super.update(elapsed);
 	}
 }

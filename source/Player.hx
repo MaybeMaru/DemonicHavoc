@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.effects.FlxFlicker;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.util.FlxColor;
@@ -174,5 +175,28 @@ class Player extends FlxSprite
 			animation.play("fall");
 
 		lastY = y;
+	}
+
+	public var canGetHit:Bool = true;
+
+	public var mikeHealth:Int = 100;
+
+	public function getHit()
+	{
+		if (!canGetHit)
+			return;
+
+		mikeHealth -= 25;
+		PlayState.instance.life.setPercent(mikeHealth / 100);
+
+		if (mikeHealth <= 0)
+		{
+			FlxG.switchState(new GameOverState());
+			return;
+		}
+
+		canGetHit = false;
+		FlxG.camera.shake(0.025, 0.1);
+		FlxFlicker.flicker(this, 1.5, 0.1, true, true, (flk) -> canGetHit = true);
 	}
 }

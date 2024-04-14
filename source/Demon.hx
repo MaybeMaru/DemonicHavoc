@@ -18,7 +18,7 @@ class Demon extends FlxSprite
 
 		loadGraphic("assets/images/demon.png", true, 20, 25);
 		animation.add("idle", [0, 1, 2], 12);
-		animation.play("idle");
+		animation.play("idle", true);
 
 		this.player = player;
 
@@ -26,7 +26,11 @@ class Demon extends FlxSprite
 		speed = FlxG.random.int(275, 325);
 		bound = FlxG.random.int(30, 50);
 
-		animation.curAnim.curFrame += Std.int(diff / 2);
+		FlxG.signals.postUpdate.addOnce(() ->
+		{
+			if (animation.curAnim != null)
+				animation.curAnim.curFrame += Std.int(diff / 2);
+		});
 
 		setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);

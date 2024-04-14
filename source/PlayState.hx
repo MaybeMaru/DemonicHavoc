@@ -19,6 +19,7 @@ class PlayState extends FlxState
 
 	public var player:Player;
 	public var map:DemonMap;
+	public var life:Life;
 
 	override public function create()
 	{
@@ -83,18 +84,18 @@ class PlayState extends FlxState
 		timer.camera = hudCam;
 		add(timer);
 
-		var life = new Life();
+		life = new Life();
 		life.camera = hudCam;
 		add(life);
 
-		var lastDemon:FlxObject = player;
-		for (i in 0...10)
-		{
-			var demon = new Demon(player);
-			demon.target = lastDemon;
-			add(demon);
-			lastDemon = demon;
-		}
+		/*var lastDemon:FlxObject = player;
+			for (i in 0...10)
+			{
+				var demon = new Demon(player);
+				demon.target = lastDemon;
+				add(demon);
+				lastDemon = demon;
+		}*/
 	}
 
 	public var inRitual:Bool = false;
@@ -119,7 +120,7 @@ class PlayState extends FlxState
 		timeElapsed += elapsed;
 
 		// Check if its time to spawn angels
-		// updateSpawn();
+		updateSpawn();
 	}
 
 	function updateSpawn()
