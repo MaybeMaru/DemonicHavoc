@@ -95,8 +95,7 @@ class Angel extends FlxSprite
 
 				new FlxTimer().start(5, (tmr) ->
 				{
-					PlayState.instance.demonsGroup.remove(demon);
-					demon.destroy();
+					demon.kill();
 				});
 			}
 		}

@@ -74,6 +74,14 @@ class PlayState extends FlxState
 		add(demonsGroup);
 		add(player);
 
+		// Precache some demon instances
+		for (i in 0...20)
+		{
+			var demon = new Demon();
+			demonsGroup.add(demon);
+			demon.kill();
+		}
+
 		FlxG.camera.follow(player, PLATFORMER);
 		FlxG.camera.bgColor = FlxColor.fromRGB(25, 0, 0);
 		FlxG.camera.setScrollBoundsRect(0, 0, map.tilemap.width, map.tilemap.height);
@@ -98,6 +106,9 @@ class PlayState extends FlxState
 		life.camera = hudCam;
 		add(life);
 
+		// pause = new PauseSubState();
+		// destroySubStates = false;
+
 		/*var lastDemon:FlxObject = player;
 			for (i in 0...10)
 			{
@@ -108,6 +119,7 @@ class PlayState extends FlxState
 		}*/
 	}
 
+	// var pause:PauseSubState;
 	public var inRitual:Bool = false;
 
 	var bleh:Float = 0;
@@ -231,7 +243,8 @@ class PlayState extends FlxState
 
 	public function spawnDemon(x:Float, y:Float)
 	{
-		var demon = new Demon(player);
+		var demon = demonsGroup.recycle(Demon);
+		demon.init(player);
 		demon.setPosition(x, y);
 
 		var i:Int = demonsArray.length - 1;

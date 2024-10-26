@@ -1,5 +1,6 @@
 package;
 
+import TextState.DemonText;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -91,10 +92,7 @@ class DemonMap extends FlxGroup
 
 		FlxG.signals.preUpdate.addOnce(() ->
 		{
-			var fuck = new FlxText(0, lowerTable.y - 25);
-			fuck.setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
-			fuck.text = "Press Z To Summon Some Buddies";
-			// fuck.color = 0xffff0000;
+			var fuck = new DemonText(0, lowerTable.y - 25, "Press Z To Summon Some Buddies");
 			fuck.scale.set(0.8, 0.8);
 			fuck.updateHitbox();
 			fuck.x = (tilemap.width - fuck.width) / 2;

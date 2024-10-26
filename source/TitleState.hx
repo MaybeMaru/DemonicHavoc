@@ -1,5 +1,6 @@
 package;
 
+import TextState.DemonText;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -60,15 +61,12 @@ class TitleState extends FlxState
 		add(logoShadow);
 		add(logo);
 
-		var index:Int = 0;
-		for (i in ["START", "CONTROLS", "CREDITS"])
+		for (i => item in ["START", "CONTROLS", "CREDITS"])
 		{
-			var fuck = new FlxText(0, 300 + 50 * index, 0, i);
-			fuck.setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
+			var fuck = new DemonText(0, 300 + 50 * i, item);
 			fuck.screenCenter(X);
-			fuck.ID = index;
+			fuck.ID = i;
 			esComoFuck.push(fuck);
-			index++;
 
 			var gay = new FlxSprite(fuck.x - 5, fuck.y - 5).makeGraphic(cast fuck.width + 10, cast fuck.height + 10, FlxColor.BLACK);
 			gay.alpha = 0.6;

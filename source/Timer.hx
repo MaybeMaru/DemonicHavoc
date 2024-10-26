@@ -1,5 +1,6 @@
 package;
 
+import TextState.DemonText;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -16,8 +17,7 @@ class Timer extends FlxGroup
 	{
 		super();
 
-		timer = new FlxText(0, 20, 0, "0:00");
-		timer.setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
+		timer = new DemonText(0, 20, "0:00");
 		timer.screenCenter(X);
 
 		var bg = new FlxSprite(timer.x - 5, timer.y - 5).makeGraphic(cast timer.width + 10, cast timer.height + 10, FlxColor.BLACK);

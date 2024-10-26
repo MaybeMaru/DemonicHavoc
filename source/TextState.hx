@@ -7,6 +7,16 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import openfl.Assets;
 
+class DemonText extends FlxText
+{
+	public function new(x:Float, y:Float, text:String)
+	{
+		super(x, y);
+		setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
+		this.text = text;
+	}
+}
+
 class TextState extends FlxState
 {
 	var text:String;
@@ -30,10 +40,7 @@ class TextState extends FlxState
 
 		bg.color = FlxColor.GRAY;
 
-		var fuck = new FlxText(20, 20);
-		fuck.setFormat(Assets.getFont("assets/data/novem___.ttf").fontName, 24);
-		fuck.text = text;
-		// fuck.screenCenter();
+		var fuck = new DemonText(20, 20, text);
 		add(fuck);
 
 		fuck.color = 0xffff0000;
