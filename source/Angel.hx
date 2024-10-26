@@ -86,7 +86,7 @@ class Angel extends FlxSprite
 
 				demon.x += FlxG.random.int(-5, 5);
 				demon.y += FlxG.random.int(-5, 5);
-				FlxG.sound.play("assets/sounds/demondie" + FlxG.random.int(1, 3) + ".mp3").pitch = FlxG.random.float(0.9, 1.1);
+				Assets.playSound("demondie" + FlxG.random.int(1, 3)).pitch = FlxG.random.float(0.9, 1.1);
 
 				demon.target = null;
 				demon.animation.play("die");
@@ -101,13 +101,13 @@ class Angel extends FlxSprite
 			}
 		}
 
-		FlxG.sound.play("assets/sounds/bite.mp3");
+		Assets.playSound("bite");
 
 		if (healthPoints <= 0)
 		{
 			destroy();
 			PlayState.instance.angelsGroup.remove(this, true);
-			FlxG.sound.play("assets/sounds/angeldie.mp3");
+			Assets.playSound("angeldie");
 
 			for (demon in demons)
 			{

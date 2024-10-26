@@ -21,8 +21,10 @@ class TitleState extends FlxState
 	public static var fromGameOver:Bool = false;
 
 	var stop:Bool = false;
-	var logo:FlxSprite;
 	var trans:FlxSprite;
+
+	var logo:FlxSprite;
+	var logoShadow:FlxSprite;
 
 	override function create()
 	{
@@ -42,9 +44,21 @@ class TitleState extends FlxState
 		logo.updateHitbox();
 		logo.screenCenter();
 		logo.y -= 60;
-		add(logo);
 
 		logo.scrollFactor.set(0, 0.9);
+
+		logoShadow = new FlxSprite(0, 0, "assets/images/logo-shadow.png");
+		logoShadow.scale.set(1.5, 1.5);
+		logoShadow.updateHitbox();
+		logoShadow.screenCenter();
+		logoShadow.y -= 60;
+
+		logoShadow.color = 0xff5b0202;
+		logoShadow.scrollFactor.set(0, 0.75);
+		logoShadow.alpha = 0.6;
+
+		add(logoShadow);
+		add(logo);
 
 		var index:Int = 0;
 		for (i in ["START", "CONTROLS", "CREDITS"])
@@ -65,15 +79,12 @@ class TitleState extends FlxState
 			gay.scrollFactor.set(0, 0.8);
 		}
 
-		FlxG.sound.playMusic("assets/music/title.mp3");
+		Assets.playMusic("title");
 
-		// if (fromGameOver)
-		// {
 		stop = true;
 		fromGameOver = false;
 		FlxG.camera.flash(FlxColor.BLACK, 1, () -> stop = false);
 		FlxG.sound.music.fadeIn();
-		// }
 
 		trans = FlxGradient.createGradientFlxSprite(1, FlxG.height * 2, [FlxColor.TRANSPARENT, FlxColor.BLACK, FlxColor.BLACK, FlxColor.BLACK], 10);
 		trans.scale.x = FlxG.width;
@@ -82,13 +93,19 @@ class TitleState extends FlxState
 		add(trans);
 
 		changeItem(0);
+
+		var force:Float = 10;
+
+		logo.y -= force;
+		logoShadow.y -= force;
+
+		FlxTween.tween(logo.offset, {y: force}, 2, {ease: FlxEase.quadInOut, type: PINGPONG});
+		FlxTween.tween(logoShadow.offset, {y: force}, 2, {ease: FlxEase.quadInOut, type: PINGPONG, startDelay: 0.333});
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-		logo.offset.y = FlxMath.fastSin((FlxG.game.ticks / 1000) * 2) * 10;
 
 		if (stop)
 			return;
@@ -102,7 +119,7 @@ class TitleState extends FlxState
 		if (FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER)
 		{
 			stop = true;
-			FlxG.sound.play("assets/sounds/select.mp3");
+			Assets.playSound("select");
 			FlxG.sound.music.fadeOut();
 			FlxTween.tween(FlxG.camera.scroll, {y: FlxG.height * 2}, 1, {
 				onComplete: (twn) ->
@@ -132,7 +149,6 @@ class TitleState extends FlxState
 								Sounds: jsfxr
 								Music: White Bat Audio (Royalty Free)
 								'));
-
 						}
 					});
 				},
@@ -146,7 +162,7 @@ class TitleState extends FlxState
 	function changeItem(change:Int)
 	{
 		if (change != 0)
-			FlxG.sound.play("assets/sounds/menuclick.mp3");
+			Assets.playSound("menuclick");
 
 		homo = FlxMath.wrap(homo + change, 0, esComoFuck.length - 1);
 		for (i in esComoFuck)

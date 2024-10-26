@@ -51,7 +51,7 @@ class TextState extends FlxState
 		if (FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.ESCAPE)
 		{
 			back = true;
-			FlxG.sound.play("assets/sounds/escape.mp3");
+			Assets.playSound("escape");
 			FlxG.camera.fade(FlxColor.BLACK, 1, false, () ->
 			{
 				TitleState.fromGameOver = true;

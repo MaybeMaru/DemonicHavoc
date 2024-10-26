@@ -34,7 +34,7 @@ class PlayState extends FlxState
 
 		FlxG.stage.quality = LOW;
 
-		FlxG.sound.playMusic("assets/music/bg.mp3", 0.8);
+		Assets.playMusic("bg", 0.8);
 
 		// Make background layers
 		for (i in 0...3)

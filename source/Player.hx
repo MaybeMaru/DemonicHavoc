@@ -120,7 +120,7 @@ class Player extends FlxSprite
 		var floor = isTouching(FLOOR);
 		if (floor && !inFloor)
 		{
-			FlxG.sound.play("assets/sounds/hitfloor.mp3");
+			Assets.playSound("hitfloor");
 		}
 		inFloor = floor;
 
@@ -135,7 +135,7 @@ class Player extends FlxSprite
 				doubleJump = false;
 				inFloor = false;
 
-				FlxG.sound.play("assets/sounds/jump.mp3");
+				Assets.playSound("jump");
 				animation.play("jump");
 			}
 		}
@@ -147,7 +147,7 @@ class Player extends FlxSprite
 				if (FlxG.keys.justPressed.X)
 				{
 					velocity.y = -jumpForce * 0.75;
-					FlxG.sound.play("assets/sounds/doublejump.mp3");
+					Assets.playSound("doublejump");
 					animation.play("jump");
 					doubleJump = true;
 
@@ -209,7 +209,7 @@ class Player extends FlxSprite
 
 		canGetHit = false;
 		FlxG.camera.shake(0.025, 0.1);
-		FlxG.sound.play("assets/sounds/hurt.mp3");
+		Assets.playSound("hurt");
 		FlxFlicker.flicker(this, 1.5, 0.1, true, true, (flk) -> canGetHit = true);
 	}
 }

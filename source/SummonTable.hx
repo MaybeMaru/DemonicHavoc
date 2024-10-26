@@ -93,9 +93,8 @@ class SummonTable extends FlxSpriteGroup
 	{
 		finished = true;
 		inRitual = false;
-		FlxG.sound.play("assets/sounds/summondemon.mp3");
-		var sound = FlxG.sound.play("assets/sounds/demonSpawn" + FlxG.random.int(1, 3) + ".mp3");
-		sound.pitch = FlxG.random.float(0.9, 1.1); // Give it some variety
+		Assets.playSound("summondemon");
+		Assets.playSound("demonSpawn" + FlxG.random.int(1, 3)).pitch = FlxG.random.float(0.9, 1.1); // Give it some variety
 		PlayState.instance.player.cancelRitual();
 		hide();
 

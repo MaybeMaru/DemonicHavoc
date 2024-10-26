@@ -43,10 +43,10 @@ class GameOverState extends FlxState
 		new FlxTimer().start(8, (tmr) ->
 		{
 			timer.visible = true;
-			FlxG.sound.play("assets/sounds/select.mp3");
+			Assets.playSound("select");
 		});
 
-		FlxG.sound.play("assets/sounds/gameover.mp3");
+		Assets.playSound("gameover");
 		FlxG.camera.flash(FlxColor.WHITE, 1, () ->
 		{
 			new FlxTimer().start(1, (tmr) ->
@@ -55,7 +55,7 @@ class GameOverState extends FlxState
 
 				new FlxTimer().start(0.3, (tmr) ->
 				{
-					FlxG.sound.play("assets/sounds/hallelujah.mp3", 1.5);
+					Assets.playSound("hallelujah", 1.5);
 				});
 			});
 		});
